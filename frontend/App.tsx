@@ -76,7 +76,7 @@ const App = () => {
       case 'FLOR': setCurrentScreen(Screen.DASH_FLOR); break;
       case 'SIRENA': setCurrentScreen(Screen.DASH_SIRENA); break;
       case 'AI_BROKER': case 'DATIN': setCurrentScreen(Screen.DASH_DATIN); break;
-      case 'VIP_AGENT': case 'VIPY': setCurrentScreen(Screen.DASH_VIPY); break;
+      case 'VIP_AGENT': case 'VIPPY': setCurrentScreen(Screen.DASH_VIPPY); break;
 
       // OTHER ROLES - ROUTED TO NEW DASHBOARD
       case 'GOD_MODE': setCurrentScreen(Screen.DASH_GOD_MODE); break;
@@ -208,8 +208,8 @@ const App = () => {
         return <AgentDashboard agentId="FLOR" onNavigate={setCurrentScreen} onBack={() => setCurrentScreen(Screen.ADMIN_PERSONNEL_SELECT)} />;
       case Screen.DASH_SIRENA:
         return <AgentDashboard agentId="SIRENA" onNavigate={setCurrentScreen} onBack={() => setCurrentScreen(Screen.ADMIN_PERSONNEL_SELECT)} />;
-      case Screen.DASH_VIPY:
-        return <AgentDashboard agentId="VIPY" onNavigate={setCurrentScreen} onBack={() => setCurrentScreen(Screen.ADMIN_PERSONNEL_SELECT)} />;
+      case Screen.DASH_VIPPY:
+        return <AgentDashboard agentId="VIPPY" onNavigate={setCurrentScreen} onBack={() => setCurrentScreen(Screen.ADMIN_PERSONNEL_SELECT)} />;
       case Screen.DASH_ARCHY:
         return <AgentDashboard agentId="ARCHY" onNavigate={setCurrentScreen} onBack={() => setCurrentScreen(Screen.ADMIN_PERSONNEL_SELECT)} />;
 
@@ -252,7 +252,7 @@ const App = () => {
     if (currentScreen === Screen.DASH_HACKY) return 'HACKY';
     if (currentScreen === Screen.DASH_FLOR) return 'FLOR';
     if (currentScreen === Screen.DASH_SIRENA) return 'SIRENA';
-    if (currentScreen === Screen.DASH_VIPY) return 'VIPY';
+    if (currentScreen === Screen.DASH_VIPPY) return 'VIPPY';
     if (currentScreen === Screen.DASH_ARCHY) return 'ARCHY';
     if (currentScreen === Screen.DASH_SPONSOR) return 'SPONSOR';
     if (currentScreen === Screen.DASH_OWNER) return 'OWNER';
@@ -260,7 +260,7 @@ const App = () => {
     if (currentScreen === Screen.DASH_PROMOTER) return 'PROMOTER';
 
     // Fallback to selectedAdminId if it matches a known agent
-    if (['ASSI', 'DESY', 'MARK', 'HACKY', 'FLOR', 'SIRENA', 'VIPY', 'DATIN', 'ARCHY', 'SPONSOR', 'OWNER', 'MANAGER', 'PROMOTER'].includes(selectedAdminId || '')) {
+    if (['ASSI', 'DESY', 'MARK', 'HACKY', 'FLOR', 'SIRENA', 'VIPPY', 'DATIN', 'ARCHY', 'SPONSOR', 'OWNER', 'MANAGER', 'PROMOTER'].includes(selectedAdminId || '')) {
       return selectedAdminId!;
     }
     return undefined;

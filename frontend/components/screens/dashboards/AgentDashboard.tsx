@@ -26,7 +26,7 @@ const AGENT_MAP_FULL = [
    { id: 'HACKY', code: 'H', color: '#ef4444', icon: ShieldCheck, role: 'CISO & GUARDIAN', name: 'HACKY' },
    { id: 'SIRENA', code: 'S', color: '#00ffff', icon: Headset, role: 'LIVE OPS CMDR', name: 'SIRENA' },
    { id: 'ASSI', code: 'I', color: '#ffffff', icon: Brain, role: 'EXECUTIVE ASST.', name: 'ASSI' },
-   { id: 'VIPY', code: 'V', color: '#f97316', icon: Briefcase, role: 'B2B PARTNERSHIP', name: 'VIPY' },
+   { id: 'VIPPY', code: 'V', color: '#f97316', icon: Briefcase, role: 'B2B PARTNERSHIP', name: 'VIPPY' },
    { id: 'MARK', code: 'M', color: '#ec4899', icon: Rocket, role: 'CMO & GROWTH', name: 'MARK' },
    { id: 'DESY', code: 'U', color: '#a855f7', icon: Palette, role: 'CPDO & UX LEAD', name: 'DESY' },
    { id: 'AI_SUPPORT', code: 'G', color: '#9ca3af', icon: Bot, role: 'TEAM PORTAL', name: 'GUIDE' },
@@ -34,7 +34,7 @@ const AGENT_MAP_FULL = [
 
 const ContextControls = ({ onClick, context }: { onClick: (agent: string, ctx: string) => void, context: string }) => (
    <div className="flex items-center gap-0.5 z-20 flex-wrap justify-end max-w-[160px]">
-      {AGENT_MAP_FULL.filter(a => ['ARCHY', 'DATIN', 'FLOR', 'HACKY', 'SIRENA', 'ASSI', 'VIPY'].includes(a.id)).map((agent) => (
+      {AGENT_MAP_FULL.filter(a => ['ARCHY', 'DATIN', 'FLOR', 'HACKY', 'SIRENA', 'ASSI', 'VIPPY'].includes(a.id)).map((agent) => (
          <button
             key={agent.id}
             onClick={(e) => { e.stopPropagation(); onClick(agent.id, `${context}_${agent.id}_LAYER`); }}
@@ -538,9 +538,7 @@ export const AgentDashboard: React.FC<Props> = ({ onNavigate, onBack, agentId })
                      <div key={i} className="flex items-center justify-between p-3 border-b border-orange-500/10 last:border-0 hover:bg-orange-500/5 transition-colors group">
                         <div className="flex items-center gap-3">
                            <div className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center text-orange-500 border border-white/5">
-                              {'>'} BOT_PROBABILITY: 12%<br />
-                              {'>'} SENTIMENT: POSITIVE<br />
-                              {'>'} INFLUENCE_TIER: MICRO
+                              <MapPin size={14} />
                            </div>
                            <div>
                               <p className="text-xs font-bold text-gray-200">{venue.name}</p>

@@ -53,8 +53,8 @@ const AGENT_CONFIG: Record<string, { name: string; role: string; color: string; 
       icon: BarChart2,
       greeting: 'AdMob eCPM optimization algorithms running. Analyzing Meritocracy Coin economy.'
    },
-   VIPY: {
-      name: 'VIPY',
+   VIPPY: {
+      name: 'VIPPY',
       role: 'B2B & PARTNERSHIPS',
       color: '#f97316', // Orange
       icon: Briefcase,
@@ -277,7 +277,7 @@ export const AdminCommand: React.FC<Props> = ({ adminId, onNavigate }) => {
                response = "Threat vector analyzed. I'm updating the Cloud Armor rules to block that signature.";
             } else if (activeAgentId === 'DATIN') {
                response = "I'm recalculating the Tokenomics based on that input. eCPM targets adjusted.";
-            } else if (activeAgentId === 'VIPY') {
+            } else if (activeAgentId === 'VIPPY') {
                response = "Great. I'll push that offer to the FlashPromoter network right away.";
             } else {
                response = "Code updated. Deploying hotfix to Cloud Run Gen 2 instances.";

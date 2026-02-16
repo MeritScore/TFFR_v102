@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  ShieldAlert, Palette, Rocket, Scale, Brain, Headset, 
-  BarChart2, Briefcase, Lock, Fingerprint, X, Terminal, 
+import {
+  ShieldAlert, Palette, Rocket, Scale, Brain, Headset,
+  BarChart2, Briefcase, Lock, Fingerprint, X, Terminal,
   Cpu, Activity
 } from 'lucide-react';
 
@@ -24,7 +24,7 @@ const ROLE_NAMES: Record<string, string> = {
   // Specific Agent Roles
   'HACKY': 'AI MODERATOR (HACKY)',
   'SIRENA': 'AI MANAGER (SIRENA)',
-  'VIPY': 'VIP AI AGENT (VIPY)',
+  'VIPPY': 'VIP AI AGENT (VIPPY)',
   'ASSI': 'EXECUTIVE ASST. (ASSI)',
   'DATIN': 'AI BROKER (DATIN)',
   // Fallbacks if needed
@@ -45,7 +45,7 @@ const AGENTS = [
   { id: 'FLOR', name: 'FLOR', role: 'COO & Legal', icon: Scale, color: 'text-yellow-500', desc: 'FinOps, ToS & Compliance' },
   { id: 'SIRENA', name: 'SIRENA', role: 'Live Ops Cmdr', icon: Headset, color: 'text-cyan-400', desc: 'Support & Trust/Safety' },
   { id: 'DATIN', name: 'DATIN', role: 'Data & Monetization', icon: BarChart2, color: 'text-green-400', desc: 'AdOps & Tokenomics' },
-  { id: 'VIPY', name: 'VIPY', role: 'B2B Partnership', icon: Briefcase, color: 'text-orange-400', desc: 'Sales & Promoter Relations' },
+  { id: 'VIPPY', name: 'VIPPY', role: 'B2B Partnership', icon: Briefcase, color: 'text-orange-400', desc: 'Sales & Promoter Relations' },
 ];
 
 export const AdminLogin: React.FC<Props> = ({ onAccessGranted, onBack, targetRole }) => {
@@ -78,13 +78,13 @@ export const AdminLogin: React.FC<Props> = ({ onAccessGranted, onBack, targetRol
         // Simulating verification
         setTimeout(() => {
           if (targetRole === 'AI_SUPPORT') {
-             // PIN Verified -> Unlock Agent Grid
-             setAuthStage('SELECT');
-             setPin(''); // Reset PIN for cleanliness, though not strictly used next
+            // PIN Verified -> Unlock Agent Grid
+            setAuthStage('SELECT');
+            setPin(''); // Reset PIN for cleanliness, though not strictly used next
           } else {
-             // PIN Verified -> Access Granted
-             setAuthStage('AUTHORIZED');
-             setTimeout(() => onAccessGranted(), 800);
+            // PIN Verified -> Access Granted
+            setAuthStage('AUTHORIZED');
+            setTimeout(() => onAccessGranted(), 800);
           }
         }, 600);
       }
@@ -92,8 +92,8 @@ export const AdminLogin: React.FC<Props> = ({ onAccessGranted, onBack, targetRol
   };
 
   const handleBack = () => {
-     // If we are on the Grid or PIN Pad, back takes us to the Personnel Select screen
-     onBack();
+    // If we are on the Grid or PIN Pad, back takes us to the Personnel Select screen
+    onBack();
   };
 
   return (
@@ -101,7 +101,7 @@ export const AdminLogin: React.FC<Props> = ({ onAccessGranted, onBack, targetRol
       {/* Background Grid & Effects */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(20,20,20,0.5)_1px,transparent_1px),linear-gradient(90deg,rgba(20,20,20,0.5)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(220,38,38,0.1)_0%,transparent_60%)] pointer-events-none"></div>
-      
+
       {/* Header */}
       <header className="relative z-20 flex items-center justify-between px-6 py-4 border-b border-red-900/30 bg-black/90 backdrop-blur-md">
         <div className="flex items-center gap-3">
@@ -111,7 +111,7 @@ export const AdminLogin: React.FC<Props> = ({ onAccessGranted, onBack, targetRol
           <div>
             <h1 className="font-orbitron font-bold text-sm tracking-[0.2em] text-white">RESTRICTED ACCESS</h1>
             <p className="text-[10px] text-red-400 font-mono tracking-wider">
-               {(targetRole === 'AI_SUPPORT') ? 'LEVEL 5 CLEARANCE' : 'PERSONNEL AUTHENTICATION'}
+              {(targetRole === 'AI_SUPPORT') ? 'LEVEL 5 CLEARANCE' : 'PERSONNEL AUTHENTICATION'}
             </p>
           </div>
         </div>
@@ -121,7 +121,7 @@ export const AdminLogin: React.FC<Props> = ({ onAccessGranted, onBack, targetRol
       </header>
 
       <main className="flex-1 relative z-10 flex flex-col items-center justify-center p-4">
-        
+
         {/* VIEW 1: AGENT SELECTION (FOR AI_SUPPORT) - UNLOCKED AFTER PIN */}
         {authStage === 'SELECT' && (
           <div className="w-full max-w-4xl animate-[fadeIn_0.5s_ease-out]">
@@ -163,7 +163,7 @@ export const AdminLogin: React.FC<Props> = ({ onAccessGranted, onBack, targetRol
               <div className="absolute inset-0 border-2 border-red-500/20 rounded-full"></div>
               <Fingerprint size={40} className="text-red-500 animate-pulse" />
             </div>
-            
+
             <div>
               <h3 className="text-xl font-orbitron font-bold text-white uppercase tracking-wider mb-1">
                 {(targetRole === 'AI_SUPPORT') ? 'AI SUPPORT GUIDE' : (ROLE_NAMES[targetRole] || selectedAgent)}
@@ -192,7 +192,7 @@ export const AdminLogin: React.FC<Props> = ({ onAccessGranted, onBack, targetRol
                 </button>
               ))}
               <button onClick={() => { setPin(''); onBack(); }} className="h-14 flex items-center justify-center bg-gray-900/50 border border-white/10 text-gray-500 hover:text-white rounded transition-all active:scale-95">
-                 <X size={20} />
+                <X size={20} />
               </button>
               <button onClick={() => handlePinEntry('0')} className="h-14 bg-gray-900/50 border border-white/10 hover:bg-white/10 rounded text-xl font-orbitron font-bold text-white transition-all active:scale-95">
                 0
@@ -204,15 +204,15 @@ export const AdminLogin: React.FC<Props> = ({ onAccessGranted, onBack, targetRol
 
         {/* VIEW 3: SUCCESS STATE */}
         {authStage === 'AUTHORIZED' && (
-           <div className="flex flex-col items-center justify-center animate-[fadeIn_0.2s_ease-out]">
-              <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center border border-green-500/50 shadow-[0_0_30px_rgba(34,197,94,0.3)] mb-6">
-                 <Terminal size={40} className="text-green-500" />
-              </div>
-              <h2 className="text-2xl font-orbitron font-black text-white tracking-widest">ACCESS GRANTED</h2>
-              <p className="text-sm text-green-400 font-mono mt-2 flex items-center gap-2">
-                 <Activity size={14} className="animate-pulse" /> INITIALIZING DASHBOARD...
-              </p>
-           </div>
+          <div className="flex flex-col items-center justify-center animate-[fadeIn_0.2s_ease-out]">
+            <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center border border-green-500/50 shadow-[0_0_30px_rgba(34,197,94,0.3)] mb-6">
+              <Terminal size={40} className="text-green-500" />
+            </div>
+            <h2 className="text-2xl font-orbitron font-black text-white tracking-widest">ACCESS GRANTED</h2>
+            <p className="text-sm text-green-400 font-mono mt-2 flex items-center gap-2">
+              <Activity size={14} className="animate-pulse" /> INITIALIZING DASHBOARD...
+            </p>
+          </div>
         )}
 
       </main>
@@ -220,9 +220,9 @@ export const AdminLogin: React.FC<Props> = ({ onAccessGranted, onBack, targetRol
       {/* Footer System Log */}
       <footer className="relative z-20 border-t border-white/5 bg-black/90 p-2">
         <div className="max-w-4xl mx-auto flex justify-between items-center text-[9px] font-mono text-gray-600">
-           <span>SECURE CONNECTION: TLS 1.3</span>
-           <span>LATENCY: 12ms</span>
-           <span>NODE: US-CENTRAL1-A</span>
+          <span>SECURE CONNECTION: TLS 1.3</span>
+          <span>LATENCY: 12ms</span>
+          <span>NODE: US-CENTRAL1-A</span>
         </div>
       </footer>
     </div>

@@ -6,7 +6,7 @@ import {
    X, Terminal, Gavel, TrendingUp, Heart, MessageCircle, ExternalLink, ChevronRight,
    Cpu, Zap, Award, Globe, CheckCircle2, Bot,
    RefreshCcw, RotateCw, ToggleLeft, ToggleRight, Undo2, Lock, Bomb, Copy, Save, ChevronDown, AlertTriangle, Play, Send,
-   AlertOctagon, UserCheck, MapPin, Crown, BarChart2, Scale, Headset, History, Wallet, Star
+   AlertOctagon, UserCheck, MapPin, Crown, BarChart2, Scale, Headset, History, Wallet, Star, Briefcase
 } from 'lucide-react';
 import { CyberButton, CyberCard, SectionHeader, CyberBadge } from '../../ui/CyberComponents';
 import { Screen } from '../../../types';
@@ -25,7 +25,7 @@ const AGENT_MAP = [
    { id: 'HACKY', code: 'H', color: '#ef4444' }, // Security
    { id: 'SIRENA', code: 'S', color: '#00ffff' },// Ops
    { id: 'ASSI', code: 'I', color: '#ffffff' },  // Strategy (I for Intel/Assi)
-   { id: 'VIPY', code: 'V', color: '#f97316' },  // Sales
+   { id: 'VIPPY', code: 'V', color: '#f97316', icon: Briefcase, role: 'B2B PARTNERSHIP', name: 'VIPPY' },  // Sales
 ];
 
 const ContextControls = ({ onClick, context }: { onClick: (agent: string, ctx: string) => void, context: string }) => (

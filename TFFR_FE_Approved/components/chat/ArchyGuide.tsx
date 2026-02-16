@@ -83,7 +83,7 @@ export const ArchyGuide: React.FC = () => {
     };
 
     return (
-        <div className="fixed bottom-24 right-6 z-[60]">
+        <div className="fixed bottom-48 right-6 z-[60]">
             {/* Floating Action Button */}
             {!isOpen && (
                 <button

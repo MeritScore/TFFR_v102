@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CyberButton, IsotypeTheFunFanReporter } from '../ui/CyberComponents';
-import { X, Facebook, Instagram } from 'lucide-react';
+import { X, Facebook, Instagram, Github } from 'lucide-react';
+import { FirebaseClient } from '../../api/FirebaseClient';
 
 interface Props {
   onBack: () => void;
@@ -22,9 +23,25 @@ export const LoginScreen: React.FC<Props> = ({ onBack, onSwitchToSignup, onLogin
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const handleProviderLogin = async (provider: 'google' | 'facebook' | 'apple' | 'github' | 'twitter') => {
+    try {
+      const { idToken } = await FirebaseClient.signInWithProvider(provider);
+      const { user } = await FirebaseClient.authenticateWithBackend(idToken);
+      onLoginSuccess({ handle: user.username });
+    } catch (error: any) {
+      console.error(`${provider} Login Failed`, error);
+      // Better error message for user
+      if (error.code === 'auth/operation-not-allowed') {
+        alert(`Authentication with ${provider} is not enabled in Firebase Console yet.`);
+      } else if (error.code === 'auth/popup-closed-by-user') {
+        // Just closed, don't alert
+      } else {
+        alert(`${provider} Login Failed: ${error.message || 'Unknown Error'}`);
+      }
+    }
+  };
+
   const handleLogin = () => {
-    // In a real app, you would authenticate and get the user's handle.
-    // Here we simulate it.
     const handle = email.split('@')[0] || 'fan_reporter';
     onLoginSuccess({ handle });
   };
@@ -107,32 +124,50 @@ export const LoginScreen: React.FC<Props> = ({ onBack, onSwitchToSignup, onLogin
           <div className="flex-1 h-[1px] bg-white/10"></div>
         </div>
 
-        {/* Social Auth - Google & Apple */}
+        {/* Social Auth - Primary (Google & Apple) */}
         <div className="space-y-2 mb-4">
-          <button className="w-full bg-white text-black font-black font-sans h-12 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-all active:scale-[0.98] duration-200 shadow-lg">
+          <button
+            onClick={() => handleProviderLogin('google')}
+            className="w-full bg-white text-black font-black font-sans h-12 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-all active:scale-[0.98] duration-200 shadow-lg"
+          >
             <GoogleLogo />
             <span className="uppercase font-orbitron text-[10px] tracking-widest font-bold">Continue with Google</span>
           </button>
 
-          <button className="w-full bg-[#0a0a0a] border border-white/20 text-white font-bold font-orbitron h-12 rounded-lg flex items-center justify-center gap-3 hover:bg-black transition-all active:scale-[0.98] duration-200 uppercase group">
+          <button
+            onClick={() => handleProviderLogin('apple')}
+            className="w-full bg-[#0a0a0a] border border-white/20 text-white font-bold font-orbitron h-12 rounded-lg flex items-center justify-center gap-3 hover:bg-black transition-all active:scale-[0.98] duration-200 uppercase group"
+          >
             <AppleLogo />
             <span className="uppercase font-orbitron text-[10px] tracking-widest font-bold">Continue with Apple</span>
           </button>
         </div>
 
-        {/* Other Options */}
+        {/* Other Options (Facebook, GitHub, X/Twitter) */}
         <div className="space-y-3 mb-6">
           <div className="text-center">
             <span className="text-gray-400 font-sans text-[10px] uppercase font-bold tracking-widest">Other options:</span>
           </div>
           <div className="flex items-center justify-center gap-4">
-            <button className="w-10 h-10 rounded-full bg-[#1877F2]/10 border border-[#1877F2]/30 flex items-center justify-center text-[#1877F2] hover:bg-[#1877F2]/20 transition-all active:scale-90">
+            <button
+              onClick={() => handleProviderLogin('facebook')}
+              className="w-10 h-10 rounded-full bg-[#1877F2]/10 border border-[#1877F2]/30 flex items-center justify-center text-[#1877F2] hover:bg-[#1877F2]/20 transition-all active:scale-90"
+              title="Continue with Facebook"
+            >
               <Facebook size={20} fill="currentColor" />
             </button>
-            <button className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#f09433] via-[#e6683c] to-[#bc1888] opacity-80 border border-white/10 flex items-center justify-center text-white hover:opacity-100 transition-all active:scale-90 shadow-lg">
-              <Instagram size={20} />
+            <button
+              onClick={() => handleProviderLogin('github')}
+              className="w-10 h-10 rounded-full bg-white/5 border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all active:scale-90"
+              title="Continue with GitHub"
+            >
+              <Github size={20} />
             </button>
-            <button className="w-10 h-10 rounded-full bg-white/5 border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all active:scale-90">
+            <button
+              onClick={() => handleProviderLogin('twitter')}
+              className="w-10 h-10 rounded-full bg-white/5 border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all active:scale-90"
+              title="Continue with X (Twitter)"
+            >
               <XLogo size={18} />
             </button>
           </div>

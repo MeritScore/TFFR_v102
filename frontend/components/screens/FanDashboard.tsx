@@ -10,6 +10,7 @@ import { TopicTicker } from '../chat/TopicTicker';
 import { GigMarket } from '../chat/GigMarket';
 import { MeritView } from './MeritView';
 import { ArchyGuide } from '../chat/ArchyGuide';
+import { chatClient } from '../../api/chatClient';
 
 interface Props {
   userProfile?: { handle: string, specialty: string };
@@ -58,62 +59,8 @@ export const FanDashboard: React.FC<Props> = ({ userProfile }) => {
 
   const calculatedCost = Math.ceil((reserveConfig.duration / 15) * reserveConfig.partySize);
 
-  const CUSTOM_INITIAL_MESSAGES: Message[] = [
-    ...INITIAL_MESSAGES,
-    {
-      id: 'msg-demo-all-buttons',
-      text: 'Need 3 people to help unload equipment at the VIP Backstage entrance. Must have credentials or high Merit Score level. Bidding open.',
-      sender: { id: 'u5', username: 'CryptoKing', meritScore: 120, avatarUrl: 'https://picsum.photos/205/205' },
-      timestamp: new Date(),
-      type: MessageType.GIG_OFFER,
-      topicTag: 'VIP_ACCESS',
-      metadata: { gigTitle: 'Equipment Unload', amount: 300 },
-      replies: [
-        { id: 'r1', text: 'I have a score of 180, is that enough?', sender: MOCK_USERS[0], timestamp: new Date(Date.now() - 1000 * 60 * 2), type: MessageType.CHAT },
-        { id: 'r2', text: 'On my way now!', sender: MOCK_USERS[1], timestamp: new Date(Date.now() - 1000 * 60 * 1), type: MessageType.CHAT }
-      ]
-    },
-    {
-      id: 'msg-flash-promo',
-      text: 'Target: Names starting with "M"',
-      sender: 'SYSTEM',
-      timestamp: new Date(),
-      type: MessageType.FLASH_PROMO,
-      metadata: {
-        gigTitle: '1 FREE DRINK',
-        venue: 'The Turbo Paddock',
-        timeLeft: '29:59',
-        target: 'Names starting with "M"'
-      }
-    },
-    {
-      id: 'msg-spot-release',
-      text: '5 Spots available for 1 Meritocracy Coin.',
-      sender: 'SYSTEM',
-      timestamp: new Date(),
-      type: MessageType.SPOT_RELEASE,
-      metadata: {
-        venue: 'Pit Stop Pub',
-        location: 'Santa Clara - Sunnyvale',
-        amount: 1,
-        timeLeft: '15m'
-      }
-    },
-    {
-      id: 'msg-interested-trade',
-      text: 'Selling 2 VIP Lounge passes for tonight. 500 MC each. Instant transfer available.',
-      sender: MOCK_USERS[2],
-      timestamp: new Date(Date.now() - 1000 * 60 * 15),
-      type: MessageType.GIG_OFFER,
-      topicTag: 'TICKETS',
-      metadata: { gigTitle: 'VIP Lounge Passes', amount: 500 },
-      replies: [
-        { id: 'r-me-1', text: 'I am interested. Would you take 900 for both?', sender: CURRENT_USER, timestamp: new Date(), type: MessageType.CHAT }
-      ]
-    }
-  ];
-
-  const [messages, setMessages] = useState<Message[]>(CUSTOM_INITIAL_MESSAGES);
+  // const CUSTOM_INITIAL_MESSAGES: Message[] = [ ... ]; // Removed Mock Data
+  const [messages, setMessages] = useState<Message[]>([]);
   const [activeChannel, setActiveChannel] = useState<'GLOBAL' | 'MERIT' | 'VIP' | 'SAFETY' | 'TRADE' | 'COMMENTS'>('GLOBAL');
   const [isGigMarketOpen, setIsGigMarketOpen] = useState(false);
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
@@ -160,16 +107,19 @@ export const FanDashboard: React.FC<Props> = ({ userProfile }) => {
       return [...prev, newMessage];
     });
   };
-  const handleSendMessage = (text: string) => {
-    setMessages(prev => {
-      const lastMsg = prev[prev.length - 1];
-      if (lastMsg && lastMsg.text === text) {
-        const updatedLastMsg = { ...lastMsg, repeatCount: (lastMsg.repeatCount || 1) + 1, timestamp: new Date() };
-        return [...prev.slice(0, -1), updatedLastMsg];
-      }
-      const newMessage: Message = { id: generateId(), text, sender: CURRENT_USER, timestamp: new Date(), type: MessageType.CHAT, repeatCount: 1, topicTag: activeTopic || undefined };
-      return [...prev, newMessage];
-    });
+  const handleSendMessage = async (text: string) => {
+    // Optimistic Update
+    const tempId = generateId();
+    const newMessage: Message = { id: tempId, text, sender: CURRENT_USER, timestamp: new Date(), type: MessageType.CHAT, repeatCount: 1, topicTag: activeTopic || undefined };
+    setMessages(prev => [...prev, newMessage]);
+
+    // Send to Backend
+    try {
+      await chatClient.postMessage(text, CURRENT_USER);
+      // The poller will pick up the real message eventually, or we could replace the temp one
+    } catch (error) {
+      console.error("Failed to send message", error);
+    }
   };
   const handleQuickAction = (action: string) => {
     if (action === 'OFFER_GIG') {
@@ -192,38 +142,32 @@ export const FanDashboard: React.FC<Props> = ({ userProfile }) => {
   const handleGenerateGift = () => { setTimeout(() => { setGiftCode(`VIP-${Math.random().toString(36).substring(2, 8).toUpperCase()}`); }, 1000); };
   const handleUpgradeVip = () => { setTimeout(() => { setSimulatedVipStatus(true); }, 1000); };
   const handleRedeemCode = () => { if (redeemCodeInput.length > 5) { setTimeout(() => { setSimulatedVipStatus(true); }, 500); } };
+  // POLL BACKEND FOR MESSAGES
   useEffect(() => {
-    let mode = 'NORMAL'; let spamCounter = 0; let topicCounter = 0; let currentTopicIndex = 0; let currentSpamPhrase = "";
-    const interval = setInterval(() => {
-      const random = Math.random();
-      if (activeThreadId && random > 0.6) {
-        const randomUser = MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)];
-        const replyText = ["Me too!", "Is this still available?", "Checking now.", "Wait for me!"][Math.floor(Math.random() * 4)];
-        const botReply: Message = { id: generateId(), text: replyText, sender: randomUser, timestamp: new Date(), type: MessageType.CHAT };
-        setMessages(prev => prev.map(msg => { if (msg.id === activeThreadId) { return { ...msg, replies: [...(msg.replies || []), botReply] }; } return msg; }));
+    const fetchMessages = async () => {
+      try {
+        const data = await chatClient.getMessages();
+        if (data && data.length > 0) {
+          setMessages(prev => {
+            // Simple dedup based on ID
+            const existingIds = new Set(prev.map(m => m.id));
+            const newMessages = data.filter(m => !existingIds.has(m.id));
+            if (newMessages.length === 0) return prev;
+            return [...prev, ...newMessages].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+          });
+        }
+      } catch (e) {
+        console.error("Polling error", e);
       }
-      if (isPausedRef.current) return;
-      if (mode === 'NORMAL' && random > 0.95) {
-        const subRandom = Math.random();
-        if (subRandom > 0.5) { mode = 'SPAM'; currentSpamPhrase = SPAM_PHRASES[Math.floor(Math.random() * SPAM_PHRASES.length)]; spamCounter = 5 + Math.floor(Math.random() * 8); }
-        else { mode = 'TOPIC'; currentTopicIndex = Math.floor(Math.random() * TOPICS.length); setActiveTopic(TOPICS[currentTopicIndex].name); topicCounter = 6 + Math.floor(Math.random() * 6); }
-      }
-      if (mode === 'SPAM') { if (spamCounter > 0) { addMessage(currentSpamPhrase, 'SPAM'); spamCounter--; } else { mode = 'NORMAL'; } }
-      else if (mode === 'TOPIC') {
-        if (topicCounter > 0) {
-          const topic = TOPICS[currentTopicIndex];
-          const keyword = topic.keywords[Math.floor(Math.random() * topic.keywords.length)];
-          const variations = [`Has anyone seen the ${keyword}?`, `The ${keyword} is crazy right now!`, `Update on ${keyword}??`, `Warning about the ${keyword}.`, `Just got to the ${keyword}.`, `Why is the ${keyword} like this?`, `Checking intel on ${keyword}...`];
-          addMessage(variations[Math.floor(Math.random() * variations.length)], 'TOPIC', topic.name);
-          topicCounter--;
-        } else { mode = 'NORMAL'; setActiveTopic(null); }
-      } else {
-        if (random > 0.75) { const nextMsg = getNextUniqueMessage(); addMessage(nextMsg, 'NORMAL'); }
-        if (random < 0.02) { const alertMsg: Message = { id: generateId(), text: SYSTEM_ALERTS[Math.floor(Math.random() * SYSTEM_ALERTS.length)], sender: 'SYSTEM', timestamp: new Date(), type: MessageType.SYSTEM, metadata: { participants: Math.floor(Math.random() * 80000) } }; setMessages(prev => [...prev, alertMsg]); }
-      }
-    }, 5000);
+    };
+
+    // Initial fetch
+    fetchMessages();
+
+    // Poll every 2 seconds
+    const interval = setInterval(fetchMessages, 2000);
     return () => clearInterval(interval);
-  }, [activeThreadId]);
+  }, []);
   useEffect(() => { if (!isPaused && chatEndRef.current) { chatEndRef.current.scrollIntoView({ behavior: 'smooth' }); } }, [messages, activeTopic, isPaused]);
 
   const getFilteredMessages = () => {

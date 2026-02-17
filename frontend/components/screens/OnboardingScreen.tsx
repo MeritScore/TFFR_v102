@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CyberButton } from '../ui/CyberComponents';
-import { ArrowRight, UserCircle, AlertTriangle, Facebook, Instagram, LogIn } from 'lucide-react';
+import { ArrowRight, UserCircle, AlertTriangle, Facebook, Github, LogIn } from 'lucide-react';
+import { FirebaseClient } from '../../api/FirebaseClient';
 
 interface Props {
   onComplete: (data: { handle: string }) => void;
@@ -26,6 +27,21 @@ export const OnboardingScreen: React.FC<Props> = ({ onComplete, onSwitchToLogin 
     }
   };
 
+  const handleProviderLogin = async (provider: 'google' | 'facebook' | 'apple' | 'github' | 'twitter') => {
+    try {
+      const { idToken } = await FirebaseClient.signInWithProvider(provider);
+      const { user } = await FirebaseClient.authenticateWithBackend(idToken);
+      onComplete({ handle: user.username });
+    } catch (error: any) {
+      console.error(`${provider} Registration Failed`, error);
+      if (error.code === 'auth/operation-not-allowed') {
+        alert(`Authentication with ${provider} is not enabled in Firebase Console yet.`);
+      } else if (error.code !== 'auth/popup-closed-by-user') {
+        alert(`${provider} Registration Failed: ${error.message || 'Unknown Error'}`);
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4 py-6 bg-cyber-black relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-10">
@@ -38,29 +54,29 @@ export const OnboardingScreen: React.FC<Props> = ({ onComplete, onSwitchToLogin 
             <h2 className="text-2xl font-orbitron font-black text-white uppercase tracking-tighter leading-tight">
               CREATE YOUR FREE<br /><span className="text-cyber-green">ACCOUNT</span>
             </h2>
-             <p className="text-gray-400 font-rajdhani font-bold text-[10px] tracking-widest mt-1 uppercase">STEP 1 OF 3</p>
+            <p className="text-gray-400 font-rajdhani font-bold text-[10px] tracking-widest mt-1 uppercase">STEP 1 OF 3</p>
           </div>
 
           {/* Email Card Container */}
           <div className="relative group">
             <div className="absolute -inset-[1px] bg-gradient-to-r from-[#39ff14] via-[#00ffff] to-[#d000ff] rounded-[14px] blur-sm opacity-60 group-hover:opacity-100 transition duration-500"></div>
-            
+
             <div className="relative p-[1.2px] rounded-[14px] bg-gradient-to-r from-[#39ff14] via-[#00ffff] to-[#d000ff]">
               <div className="bg-[#050505] rounded-[13px] p-3.5 space-y-2 h-full relative overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
 
                 <h3 className="text-[#39ff14] font-orbitron font-bold text-[10px] tracking-[0.2em] uppercase relative z-10">ENTER EMAIL ADDRESS</h3>
-                
+
                 <div className="relative bg-[#0a0a0a] border border-white/10 rounded-lg p-2 flex items-center gap-3 group-focus-within:border-[#39ff14]/50 transition-colors z-10">
                   <div className="w-7 h-7 rounded-full border border-[#39ff14]/40 bg-[#39ff14]/10 flex items-center justify-center shrink-0">
                     <UserCircle size={14} className="text-[#39ff14]" />
                   </div>
-                  <input 
-                    type="email" 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value.toLowerCase())} 
-                    placeholder="enter email here..." 
-                    className="flex-1 bg-transparent border-none text-white font-rajdhani font-bold text-base focus:ring-0 outline-none placeholder:text-gray-600 appearance-none lowercase tracking-wide" 
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value.toLowerCase())}
+                    placeholder="enter email here..."
+                    className="flex-1 bg-transparent border-none text-white font-rajdhani font-bold text-base focus:ring-0 outline-none placeholder:text-gray-600 appearance-none lowercase tracking-wide"
                   />
                 </div>
               </div>
@@ -68,24 +84,24 @@ export const OnboardingScreen: React.FC<Props> = ({ onComplete, onSwitchToLogin 
           </div>
 
           {/* Next Step Button */}
-           <CyberButton 
-              fullWidth 
-              onClick={handleEmailSubmit} 
-              disabled={!email} 
-              variant="primary"
-              className={`h-14 text-base rounded-xl font-black shadow-[0_0_30px_rgba(57,255,20,0.3)] group transition-all duration-300 ${!email ? 'opacity-30 grayscale cursor-not-allowed' : 'hover:scale-[1.01] active:scale-95'}`}
-            >
-              NEXT STEP <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </CyberButton>
+          <CyberButton
+            fullWidth
+            onClick={handleEmailSubmit}
+            disabled={!email}
+            variant="primary"
+            className={`h-14 text-base rounded-xl font-black shadow-[0_0_30px_rgba(57,255,20,0.3)] group transition-all duration-300 ${!email ? 'opacity-30 grayscale cursor-not-allowed' : 'hover:scale-[1.01] active:scale-95'}`}
+          >
+            NEXT STEP <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </CyberButton>
 
           {/* Action Required Alert */}
           {email.length > 0 && (
             <div className="bg-[#241a05] border border-yellow-500/30 rounded-lg p-3 flex items-start gap-3 backdrop-blur-sm animate-[fadeIn_0.3s_ease-out]">
-               <AlertTriangle className="text-yellow-400 shrink-0 mt-0.5" size={16} />
-               <div className="space-y-0.5 pt-0.5 text-left">
-                  <h4 className="text-yellow-400 font-orbitron font-black text-[9px] uppercase tracking-widest">ACTION REQUIRED</h4>
-                  <p className="text-[10px] text-white font-sans leading-tight">Verify your email address after registration to activate full account features.</p>
-               </div>
+              <AlertTriangle className="text-yellow-400 shrink-0 mt-0.5" size={16} />
+              <div className="space-y-0.5 pt-0.5 text-left">
+                <h4 className="text-yellow-400 font-orbitron font-black text-[9px] uppercase tracking-widest">ACTION REQUIRED</h4>
+                <p className="text-[10px] text-white font-sans leading-tight">Verify your email address after registration to activate full account features.</p>
+              </div>
             </div>
           )}
 
@@ -97,30 +113,48 @@ export const OnboardingScreen: React.FC<Props> = ({ onComplete, onSwitchToLogin 
 
           {/* Social Auth */}
           <div className="space-y-2">
-            <button className="w-full bg-white text-black font-black font-sans h-12 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-all active:scale-[0.98] duration-200 shadow-lg">
+            <button
+              onClick={() => handleProviderLogin('google')}
+              className="w-full bg-white text-black font-black font-sans h-12 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-all active:scale-[0.98] duration-200 shadow-lg"
+            >
               <GoogleLogo />
               <span className="uppercase font-orbitron text-[10px] tracking-widest font-bold">Continue with Google</span>
             </button>
-            
-            <button className="w-full bg-[#0a0a0a] border border-white/20 text-white font-bold font-orbitron text-[9px] tracking-[0.2em] h-12 rounded-lg flex items-center justify-center gap-3 hover:bg-black transition-all active:scale-[0.98] duration-200 uppercase group">
+
+            <button
+              onClick={() => handleProviderLogin('apple')}
+              className="w-full bg-[#0a0a0a] border border-white/20 text-white font-bold font-orbitron text-[9px] tracking-[0.2em] h-12 rounded-lg flex items-center justify-center gap-3 hover:bg-black transition-all active:scale-[0.98] duration-200 uppercase group"
+            >
               <AppleLogo />
               <span className="uppercase font-orbitron text-[10px] tracking-widest font-bold">Continue with Apple</span>
             </button>
           </div>
 
           {/* Other Options */}
-          <div className="space-y-3 pt-2">
+          <div className="space-y-3 mb-6">
             <div className="text-center">
               <span className="text-gray-400 font-sans text-[10px] uppercase font-bold tracking-widest">Other options:</span>
             </div>
             <div className="flex items-center justify-center gap-4">
-              <button className="w-10 h-10 rounded-full bg-[#1877F2]/10 border border-[#1877F2]/30 flex items-center justify-center text-[#1877F2] hover:bg-[#1877F2]/20 transition-all active:scale-90">
+              <button
+                onClick={() => handleProviderLogin('facebook')}
+                className="w-10 h-10 rounded-full bg-[#1877F2]/10 border border-[#1877F2]/30 flex items-center justify-center text-[#1877F2] hover:bg-[#1877F2]/20 transition-all active:scale-90"
+                title="Continue with Facebook"
+              >
                 <Facebook size={20} fill="currentColor" />
               </button>
-              <button className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#f09433] via-[#e6683c] to-[#bc1888] opacity-80 border border-white/10 flex items-center justify-center text-white hover:opacity-100 transition-all active:scale-90 shadow-lg">
-                <Instagram size={20} />
+              <button
+                onClick={() => handleProviderLogin('github')}
+                className="w-10 h-10 rounded-full bg-white/5 border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all active:scale-90"
+                title="Continue with GitHub"
+              >
+                <Github size={20} />
               </button>
-              <button className="w-10 h-10 rounded-full bg-white/5 border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all active:scale-90">
+              <button
+                onClick={() => handleProviderLogin('twitter')}
+                className="w-10 h-10 rounded-full bg-white/5 border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all active:scale-90"
+                title="Continue with X (Twitter)"
+              >
                 <XLogo size={18} />
               </button>
             </div>
@@ -128,7 +162,7 @@ export const OnboardingScreen: React.FC<Props> = ({ onComplete, onSwitchToLogin 
 
           {/* Login Link */}
           <div className="pt-2">
-            <button 
+            <button
               onClick={onSwitchToLogin}
               className="w-full bg-cyber-green text-black font-black font-orbitron text-[10px] tracking-[0.15em] h-12 rounded-lg flex items-center justify-center gap-3 border border-transparent shadow-[0_0_15px_rgba(57,255,20,0.3)] transition-all active:scale-[0.96] active:bg-black active:border-cyber-cyan active:text-cyber-cyan duration-200 uppercase group"
             >

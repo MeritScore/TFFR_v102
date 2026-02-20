@@ -4,9 +4,8 @@ import { Message, User } from '../types';
 export const chatClient = {
     getMessages: async (channelId?: string): Promise<Message[]> => {
         try {
-            const url = channelId
-                ? `${API_BASE_URL}${ENDPOINTS.CHAT_MESSAGES}/${channelId}`
-                : `${API_BASE_URL}${ENDPOINTS.CHAT_MESSAGES}`;
+            const id = channelId || 'GLOBAL';
+            const url = `${API_BASE_URL}${ENDPOINTS.CHAT_MESSAGES}/${id}`;
 
             const response = await fetch(url);
             if (!response.ok) {

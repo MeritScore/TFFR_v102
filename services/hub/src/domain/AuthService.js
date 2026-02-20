@@ -40,7 +40,7 @@ class AuthService {
                 email: googleUser.email,
                 avatarUrl: googleUser.picture,
                 meritScore: 100, // Starting score
-                role: 'FAN'
+                role: 'USER'
             };
             await this.db.createUser(user);
         }

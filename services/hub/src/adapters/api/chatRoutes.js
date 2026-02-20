@@ -13,14 +13,14 @@ module.exports = (chatService) => {
     // POST /chat/messages
     router.post('/messages', async (req, res) => {
         try {
-            // In a real app, user comes from req.user (JWT)
-            const { user, channelId, content } = req.body;
+            // In a real app, user comes from req.user (JWT), but matching frontend for now
+            const { sender, channelId, text } = req.body;
 
-            if (!user || !user.id || !user.username) {
-                return res.status(400).json({ error: "User object with id and username is required" });
+            if (!sender || !sender.id || !sender.username) {
+                return res.status(400).json({ error: "Sender object with id and username is required" });
             }
 
-            const message = await chatService.postMessage(user, channelId, content);
+            const message = await chatService.postMessage(sender, channelId, text);
             res.status(201).json(message);
         } catch (error) {
             res.status(400).json({ error: error.message });

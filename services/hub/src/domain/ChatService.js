@@ -10,16 +10,16 @@ class ChatService {
         this.db = dbRepository;
     }
 
-    async postMessage(user, channelId, content) {
-        if (!content || content.trim() === "") {
-            throw new Error("Message content cannot be empty");
+    async postMessage(sender, channelId, text) {
+        if (!text || text.trim() === "") {
+            throw new Error("Message text cannot be empty");
         }
 
         const messageData = {
-            userId: user.id,
-            username: user.username,
-            channelId,
-            content,
+            sender,         // Full user object
+            channelId: channelId || 'GLOBAL',
+            text,           // Changed from content to text
+            type: 'CHAT',   // Defaulting to chat type
             timestamp: new Date()
         };
 

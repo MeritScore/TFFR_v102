@@ -2,11 +2,9 @@ import { initializeApp } from 'firebase/app';
 import {
     getAuth,
     GoogleAuthProvider,
-    FacebookAuthProvider,
-    GithubAuthProvider,
-    TwitterAuthProvider,
-    OAuthProvider,
     signInWithPopup,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
     User as FirebaseUser
 } from 'firebase/auth';
 import { firebaseConfig } from './firebaseConfig';
@@ -18,11 +16,7 @@ const auth = getAuth(app);
 
 // Providers
 const providers: { [key: string]: any } = {
-    google: new GoogleAuthProvider(),
-    facebook: new FacebookAuthProvider(),
-    github: new GithubAuthProvider(),
-    twitter: new TwitterAuthProvider(),
-    apple: new OAuthProvider('apple.com')
+    google: new GoogleAuthProvider()
 };
 
 export const FirebaseClient = {
@@ -38,6 +32,30 @@ export const FirebaseClient = {
             return { user, idToken };
         } catch (error: any) {
             console.error(`${providerName} Sign-In Error`, error);
+            throw error;
+        }
+    },
+
+    registerWithEmail: async (email: string, password: string) => {
+        try {
+            const result = await createUserWithEmailAndPassword(auth, email, password);
+            const user = result.user;
+            const idToken = await user.getIdToken();
+            return { user, idToken };
+        } catch (error: any) {
+            console.error('Email Registration Error', error);
+            throw error;
+        }
+    },
+
+    loginWithEmail: async (email: string, password: string) => {
+        try {
+            const result = await signInWithEmailAndPassword(auth, email, password);
+            const user = result.user;
+            const idToken = await user.getIdToken();
+            return { user, idToken };
+        } catch (error: any) {
+            console.error('Email Login Error', error);
             throw error;
         }
     },

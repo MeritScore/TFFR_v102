@@ -88,7 +88,7 @@ export const LoginSimulation = ({ onSelectRole }: { onSelectRole: (role: UserRol
               SINGULARITY FOR<br />
               MASSIVE EVENTS
             </h2>
-            <CyberButton fullWidth onClick={() => onSelectRole(UserRole.FAN)} className="h-20 relative overflow-hidden group">
+            <CyberButton fullWidth onClick={() => onSelectRole(UserRole.USER)} className="h-20 relative overflow-hidden group">
               <div className="absolute top-0 left-0 w-full h-[2px] bg-white/30 animate-scan pointer-events-none"></div>
               <div className="w-11 h-11 mr-4">
                 <IsotypeTheFunFanReporter color="#000000" noGlow={true} className="w-full h-full" />

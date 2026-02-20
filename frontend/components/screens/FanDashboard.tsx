@@ -26,6 +26,17 @@ function shuffleArray(array: string[]) {
 }
 const generateId = () => Math.random().toString(36).substr(2, 9);
 export const FanDashboard: React.FC<Props> = ({ userProfile }) => {
+  const activeUser: User = userProfile && userProfile.handle ? {
+    id: `u-${userProfile.handle}`, // Mock ID untill full Firebase sync is implemented in UI
+    username: userProfile.handle,
+    meritScore: 100,
+    avatarUrl: `https://ui-avatars.com/api/?name=${userProfile.handle}&background=random`,
+    isVerified: true,
+    role: userProfile.specialty || 'FAN',
+    skills: [],
+    behavioralStats: { consistency: 80, complexity: 'MEDIUM', velocity: 80, collateral: 100 }
+  } : CURRENT_USER;
+
   const isVip = userProfile?.specialty === 'vip';
   const [showVipPortal, setShowVipPortal] = useState(false);
   const [giftCode, setGiftCode] = useState<string | null>(null);
@@ -65,7 +76,7 @@ export const FanDashboard: React.FC<Props> = ({ userProfile }) => {
   const [isGigMarketOpen, setIsGigMarketOpen] = useState(false);
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
-  const [viewedUser, setViewedUser] = useState<User>(CURRENT_USER);
+  const [viewedUser, setViewedUser] = useState<User>(activeUser);
   const [isPaused, setIsPaused] = useState(false);
   const isPausedRef = useRef(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -74,7 +85,7 @@ export const FanDashboard: React.FC<Props> = ({ userProfile }) => {
   const handleChannelSelect = (channel: any) => {
     setActiveChannel(channel);
     if (channel === 'VIP') { setShowVipPortal(true); }
-    if (channel === 'MERIT') { setViewedUser(CURRENT_USER); }
+    if (channel === 'MERIT') { setViewedUser(activeUser); }
   };
   const handleViewProfile = (user: User) => {
     setViewedUser(user);
@@ -85,7 +96,7 @@ export const FanDashboard: React.FC<Props> = ({ userProfile }) => {
   const handleOpenThread = (message: Message) => { setActiveThreadId(message.id); handleInteraction(); };
   const handleSendReply = (text: string) => {
     if (!activeThreadId) return;
-    const replyMsg: Message = { id: generateId(), text, sender: CURRENT_USER, timestamp: new Date(), type: MessageType.CHAT };
+    const replyMsg: Message = { id: generateId(), text, sender: activeUser, timestamp: new Date(), type: MessageType.CHAT };
     setMessages(prev => prev.map(msg => {
       if (msg.id === activeThreadId) return { ...msg, replies: [...(msg.replies || []), replyMsg] };
       return msg;
@@ -110,12 +121,12 @@ export const FanDashboard: React.FC<Props> = ({ userProfile }) => {
   const handleSendMessage = async (text: string) => {
     // Optimistic Update
     const tempId = generateId();
-    const newMessage: Message = { id: tempId, text, sender: CURRENT_USER, timestamp: new Date(), type: MessageType.CHAT, repeatCount: 1, topicTag: activeTopic || undefined };
+    const newMessage: Message = { id: tempId, text, sender: activeUser, timestamp: new Date(), type: MessageType.CHAT, repeatCount: 1, topicTag: activeTopic || undefined };
     setMessages(prev => [...prev, newMessage]);
 
     // Send to Backend
     try {
-      await chatClient.postMessage(text, CURRENT_USER);
+      await chatClient.postMessage(text, activeUser);
       // The poller will pick up the real message eventually, or we could replace the temp one
     } catch (error) {
       console.error("Failed to send message", error);
@@ -123,19 +134,19 @@ export const FanDashboard: React.FC<Props> = ({ userProfile }) => {
   };
   const handleQuickAction = (action: string) => {
     if (action === 'OFFER_GIG') {
-      const msg: Message = { id: generateId(), text: 'I need 2 runners for Gate B. 50MC per person. Urgent!', sender: CURRENT_USER, timestamp: new Date(), type: MessageType.GIG_OFFER, metadata: { amount: 50, gigTitle: "Runner Needed" } };
+      const msg: Message = { id: generateId(), text: 'I need 2 runners for Gate B. 50MC per person. Urgent!', sender: activeUser, timestamp: new Date(), type: MessageType.GIG_OFFER, metadata: { amount: 50, gigTitle: "Runner Needed" } };
       setMessages(prev => [...prev, msg]);
     } else if (action === 'REQUEST_HELP') {
-      const msg: Message = { id: generateId(), text: 'REQUESTING ASSISTANCE: Need backup at Section 100. Crowd density high.', sender: CURRENT_USER, timestamp: new Date(), type: MessageType.ALERT, metadata: { amount: 0, location: 'Section 100' } };
+      const msg: Message = { id: generateId(), text: 'REQUESTING ASSISTANCE: Need backup at Section 100. Crowd density high.', sender: activeUser, timestamp: new Date(), type: MessageType.ALERT, metadata: { amount: 0, location: 'Section 100' } };
       setMessages(prev => [...prev, msg]);
     } else if (action === 'INTEL') {
-      const msg: Message = { id: generateId(), text: 'Reported obstruction at Sector 4. Awaiting verification.', sender: CURRENT_USER, timestamp: new Date(), type: MessageType.ALERT, metadata: { amount: 5, location: 'Sector 4' } };
+      const msg: Message = { id: generateId(), text: 'Reported obstruction at Sector 4. Awaiting verification.', sender: activeUser, timestamp: new Date(), type: MessageType.ALERT, metadata: { amount: 5, location: 'Sector 4' } };
       setMessages(prev => [...prev, msg]);
     } else if (action === 'STARTING_BID') {
-      const msg: Message = { id: generateId(), text: `STARTING BID: 150 MC for the signed jersey!`, sender: CURRENT_USER, timestamp: new Date(), type: MessageType.GIG_OFFER, metadata: { amount: 150, gigTitle: "Auction Bid" } };
+      const msg: Message = { id: generateId(), text: `STARTING BID: 150 MC for the signed jersey!`, sender: activeUser, timestamp: new Date(), type: MessageType.GIG_OFFER, metadata: { amount: 150, gigTitle: "Auction Bid" } };
       setMessages(prev => [...prev, msg]);
     } else if (action === 'TIP') {
-      const tipMsg: Message = { id: generateId(), text: `Tipped 5 MC to Hive Mind`, sender: CURRENT_USER, timestamp: new Date(), type: MessageType.TIPPING, metadata: { amount: 5 } };
+      const tipMsg: Message = { id: generateId(), text: `Tipped 5 MC to Hive Mind`, sender: activeUser, timestamp: new Date(), type: MessageType.TIPPING, metadata: { amount: 5 } };
       setMessages(prev => [...prev, tipMsg]);
     }
   };
@@ -177,15 +188,15 @@ export const FanDashboard: React.FC<Props> = ({ userProfile }) => {
         // Filter for Gigs/Trades where user is sender OR user replied to them
         return messages.filter(m => {
           const isTradeType = m.type === MessageType.GIG_OFFER || m.type === MessageType.SOCIAL_LOTTERY || m.type === MessageType.SPOT_RELEASE || m.type === MessageType.FLASH_PROMO;
-          const isMyMessage = typeof m.sender === 'object' && m.sender.id === CURRENT_USER.id;
-          const hasMyReply = m.replies?.some(r => typeof r.sender === 'object' && r.sender.id === CURRENT_USER.id);
+          const isMyMessage = typeof m.sender === 'object' && m.sender.id === activeUser.id;
+          const hasMyReply = m.replies?.some(r => typeof r.sender === 'object' && r.sender.id === activeUser.id);
           return isTradeType && (isMyMessage || hasMyReply || m.type === MessageType.SPOT_RELEASE || m.type === MessageType.FLASH_PROMO); // Always show spot releases in Trade for now
         });
       case 'SAFETY': return messages.filter(m => m.type === MessageType.ALERT || m.type === MessageType.SYSTEM);
       case 'COMMENTS':
         return messages.filter(m => {
-          const isMyMessage = typeof m.sender === 'object' && m.sender.id === CURRENT_USER.id;
-          const hasMyReply = m.replies?.some(r => typeof r.sender === 'object' && r.sender.id === CURRENT_USER.id);
+          const isMyMessage = typeof m.sender === 'object' && m.sender.id === activeUser.id;
+          const hasMyReply = m.replies?.some(r => typeof r.sender === 'object' && r.sender.id === activeUser.id);
           return isMyMessage || hasMyReply;
         });
       default: return messages;

@@ -2,7 +2,7 @@ export const APP_VERSION = 'MSv1';
 
 export enum UserRole {
   GUEST = 'GUEST',
-  FAN = 'FAN',
+  USER = 'USER',
   ADMIN = 'ADMIN'
 }
 

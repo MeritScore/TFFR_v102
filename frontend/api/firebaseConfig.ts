@@ -1,9 +1,9 @@
 export const firebaseConfig = {
-    apiKey: "AIzaSyAjY57tzVJWapN6rJfp4HNqtAlMfV20oZM",
-    authDomain: "thefunfanreporter.firebaseapp.com",
-    projectId: "thefunfanreporter",
-    storageBucket: "thefunfanreporter.firebasestorage.app",
-    messagingSenderId: "373690256038",
-    appId: "1:373690256038:web:2abd658968ddb9c5370267",
-    measurementId: "G-JTSXNBV9VT"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };

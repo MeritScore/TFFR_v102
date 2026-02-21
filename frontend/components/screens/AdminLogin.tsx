@@ -31,9 +31,25 @@ const ROLE_NAMES: Record<string, string> = {
   'ASSISTANT': 'EXECUTIVE ASST.',
   'MODERATOR': 'AI MODERATOR',
   'AI_BROKER': 'AI BROKER',
-  'AI_MANAGER': 'AI MANAGER',
   'VIP_AGENT': 'VIP AI AGENT',
   'AI_SUPPORT': 'AI SUPPORT GUIDE'
+};
+
+const AGENT_PINS: Record<string, string> = {
+  'ARCHY': '1111',
+  'ASSI': '2222',
+  'DESY': '3333',
+  'MARK': '4444',
+  'HACKY': '5555',
+  'FLOR': '6666',
+  'SIRENA': '7777',
+  'DATIN': '8888',
+  'VIPPY': '9999',
+  'SPONSOR': '1234',
+  'OWNER': '4321',
+  'MANAGER': '5678',
+  'PROMOTER': '8765',
+  'AI_SUPPORT': '1010'
 };
 
 // The AI High Council Data (Only visible if AI_SUPPORT is selected)
@@ -75,16 +91,37 @@ export const AdminLogin: React.FC<Props> = ({ onAccessGranted, onBack, targetRol
       const newPin = pin + num;
       setPin(newPin);
       if (newPin.length === 4) {
-        // Simulating verification
+        // --- SECURE PIN LOGIC ---
+        const MASTER_PIN = '2026'; // Founder's Omni-Passcode
+        const isMasterPin = newPin === MASTER_PIN;
+        const targetPin = AGENT_PINS[targetRole] || '0000'; // Default fallback if not mapped
+        const isAgentPin = newPin === targetPin;
+        const isGodModePanel = targetRole === 'GOD_MODE';
+
+        let isAuthorized = false;
+
+        if (isGodModePanel) {
+          // Only the Master PIN can unlock the God Mode panel
+          if (isMasterPin) isAuthorized = true;
+        } else {
+          // Other panels can be unlocked by their specific PIN or the Master PIN
+          if (isAgentPin || isMasterPin) isAuthorized = true;
+        }
+
         setTimeout(() => {
-          if (targetRole === 'AI_SUPPORT') {
-            // PIN Verified -> Unlock Agent Grid
-            setAuthStage('SELECT');
-            setPin(''); // Reset PIN for cleanliness, though not strictly used next
+          if (isAuthorized) {
+            if (targetRole === 'AI_SUPPORT') {
+              // PIN Verified -> Unlock Agent Grid
+              setAuthStage('SELECT');
+              setPin('');
+            } else {
+              // PIN Verified -> Access Granted
+              setAuthStage('AUTHORIZED');
+              setTimeout(() => onAccessGranted(), 800);
+            }
           } else {
-            // PIN Verified -> Access Granted
-            setAuthStage('AUTHORIZED');
-            setTimeout(() => onAccessGranted(), 800);
+            // UNAUTHORIZED -> Flash/Reset
+            setPin('');
           }
         }, 600);
       }

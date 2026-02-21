@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Crown, ShieldCheck, DollarSign, Users, Flame, Search, Volume2, X, Check, Key, CheckCircle2, Ticket, Gift, CreditCard, Lock, AlertTriangle, Copy, Star, Coins, MessageSquare, Briefcase, Bookmark, Plus, Minus, Zap } from 'lucide-react';
+import { getAuth, sendEmailVerification } from 'firebase/auth';
 import { CyberButton } from '../ui/CyberComponents';
 import { Message, MessageType, User } from '../../types';
 import { CURRENT_USER, INITIAL_MESSAGES, SYSTEM_ALERTS, MOCK_USERS, TOPICS, SPAM_PHRASES, UNIQUE_MESSAGES } from '../chat/ChatConstants';
@@ -46,6 +47,31 @@ export const FanDashboard: React.FC<Props> = ({ userProfile }) => {
   // Reservation Modal State
   const [reservationState, setReservationState] = useState<'CLOSED' | 'CONFIG' | 'SUCCESS'>('CLOSED');
   const [reserveConfig, setReserveConfig] = useState({ duration: 45, partySize: 5, name: '' });
+
+  // Email Verification State
+  const [isEmailVerified, setIsEmailVerified] = useState(true);
+  const [verificationSent, setVerificationSent] = useState(false);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    // Check if they are a password user and NOT verified
+    if (user && user.providerData.some(p => p.providerId === 'password') && !user.emailVerified) {
+      setIsEmailVerified(false);
+    }
+  }, []);
+
+  const handleResendVerification = async () => {
+    const auth = getAuth();
+    if (auth.currentUser) {
+      try {
+        await sendEmailVerification(auth.currentUser);
+        setVerificationSent(true);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
 
   // Promo Modal State
   const [promoState, setPromoState] = useState<'CLOSED' | 'CLAIM' | 'REDEEMED'>('CLOSED');
@@ -462,6 +488,40 @@ export const FanDashboard: React.FC<Props> = ({ userProfile }) => {
 
   return (
     <div className="flex flex-col h-[calc(100vh-140px)] relative font-sans text-gray-200 bg-black">
+      {!isEmailVerified && (
+        <div className="absolute inset-0 z-[200] flex flex-col items-center justify-center bg-black/95 backdrop-blur-md px-4 text-center font-sans">
+          <div className="max-w-md w-full bg-[#111] border border-red-500/30 rounded-2xl p-8 space-y-6 shadow-[0_0_50px_rgba(220,38,38,0.15)]">
+            <div className="w-20 h-20 mx-auto bg-red-500/10 rounded-full flex items-center justify-center border border-red-500/30">
+              <ShieldCheck size={40} className="text-red-500" />
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-orbitron font-black text-white uppercase tracking-widest mb-2">VERIFICATION REQUIRED</h2>
+              <p className="text-sm text-gray-400 font-sans leading-relaxed">
+                To protect the Hive Mind from spam and bots, you must verify your email address before accessing the Global Feed.
+              </p>
+            </div>
+
+            <div className="bg-black/50 border border-white/5 rounded-lg p-4 font-mono text-xs text-center text-gray-400">
+              Check your inbox (and spam folder) for a verification link from The Fun Fan Reporter.
+            </div>
+
+            <CyberButton
+              fullWidth
+              onClick={handleResendVerification}
+              disabled={verificationSent}
+              className={`!rounded-xl !bg-red-600 hover:!bg-red-500 shadow-[0_0_20px_rgba(220,38,38,0.4)] ${verificationSent ? 'opacity-50' : ''}`}
+            >
+              {verificationSent ? 'VERIFICATION EMAIL SENT' : 'RESEND VERIFICATION EMAIL'}
+            </CyberButton>
+
+            <button onClick={() => window.location.reload()} className="text-xs text-gray-400 font-mono uppercase tracking-widest hover:text-white transition-colors mt-4">
+              I'VE VERIFIED MY EMAIL →
+            </button>
+          </div>
+        </div>
+      )}
+
       {renderVipPortalOverlay()}
       {renderReservationModals()}
       {renderPromoModals()}

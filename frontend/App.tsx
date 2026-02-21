@@ -5,6 +5,7 @@ import { OnboardingScreen } from './components/screens/OnboardingScreen';
 import { LoginScreen } from './components/screens/LoginScreen';
 import { RecoverPasswordScreen } from './components/screens/RecoverPasswordScreen';
 import { SpecialtySelectionScreen } from './components/screens/SpecialtySelectionScreen';
+import { AdminGatewayLogin } from './components/screens/AdminGatewayLogin';
 import { AdminPersonnelSelect } from './components/screens/AdminPersonnelSelect';
 import { AdminLogin } from './components/screens/AdminLogin';
 import { FanDashboard } from './components/screens/FanDashboard';
@@ -32,7 +33,7 @@ const App = () => {
   const handleRoleSelect = (selectedRole: UserRole) => {
     setRole(selectedRole);
     if (selectedRole === UserRole.ADMIN) {
-      setCurrentScreen(Screen.ADMIN_PERSONNEL_SELECT);
+      setCurrentScreen(Screen.ADMIN_GATEWAY);
     } else {
       setCurrentScreen(Screen.ONBOARDING);
     }
@@ -106,6 +107,13 @@ const App = () => {
     switch (currentScreen) {
       case Screen.LOGIN:
         return <LoginSimulation onSelectRole={handleRoleSelect} />;
+      case Screen.ADMIN_GATEWAY:
+        return (
+          <AdminGatewayLogin
+            onBack={handleLogout}
+            onLoginSuccess={() => setCurrentScreen(Screen.ADMIN_PERSONNEL_SELECT)}
+          />
+        );
       case Screen.ADMIN_PERSONNEL_SELECT:
         return <AdminPersonnelSelect onSelectPersonnel={handlePersonnelSelected} onBack={handleLogout} />;
       case Screen.ADMIN_LOGIN:
@@ -239,7 +247,7 @@ const App = () => {
 
   const isFullScreen = [
     Screen.LOGIN, Screen.ONBOARDING, Screen.LOGIN_FLOW,
-    Screen.ADMIN_PERSONNEL_SELECT, Screen.ADMIN_LOGIN,
+    Screen.ADMIN_GATEWAY, Screen.ADMIN_PERSONNEL_SELECT, Screen.ADMIN_LOGIN,
     Screen.RECOVER_PASSWORD, Screen.SELECT_SPECIALTY
   ].includes(currentScreen);
 

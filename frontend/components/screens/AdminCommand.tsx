@@ -6,7 +6,7 @@ import {
    X, Terminal, Gavel, TrendingUp, Heart, MessageCircle, ExternalLink, ChevronRight,
    Cpu, Zap, Award, Globe, CheckCircle2, Bot,
    RefreshCcw, RotateCw, ToggleLeft, ToggleRight, Undo2, Lock, Bomb, Copy, Save, ChevronDown, AlertTriangle, Play, Send,
-   AlertOctagon, Scale, Headset, BarChart2, Briefcase, Eye, Link
+   AlertOctagon, Scale, Headset, BarChart2, Briefcase, Eye, Link, Key, ShieldAlert
 } from 'lucide-react';
 import { CyberButton, CyberCard, SectionHeader, CyberBadge, IsotypeTheFunFanReporter } from '../ui/CyberComponents';
 import { Screen } from '../../types';
@@ -526,6 +526,34 @@ export const AdminCommand: React.FC<Props> = ({ adminId, onNavigate }) => {
                   </div>
                </div>
             </CyberButton>
+
+            {/* TEAM CREDENTIALS (GOD MODE ONLY) */}
+            {adminId === 'GOD_MODE' && (
+               <div className="mt-3">
+                  <CyberButton
+                     fullWidth
+                     variant="danger"
+                     onClick={() => onNavigate(Screen.TEAM_CREDENTIALS)}
+                     className="h-16 group !p-0 overflow-visible shadow-[0_0_15px_rgba(239,68,68,0.2)] border border-red-500/50"
+                  >
+                     <div className="w-full flex items-center justify-between px-3">
+                        <div className="flex items-center gap-3">
+                           <div className="bg-black p-2 rounded-lg text-red-500 border border-black group-hover:scale-110 transition-transform shadow-lg">
+                              <Key size={20} fill="currentColor" />
+                           </div>
+                           <div className="text-left flex flex-col">
+                              <span className="font-orbitron font-black text-sm text-black tracking-tighter leading-none">TEAM CREDENTIALS</span>
+                              <span className="text-[9px] text-gray-900 font-bold font-mono leading-tight mt-1">ROOT ACCESS DECRYPTED</span>
+                           </div>
+                        </div>
+
+                        <div className="pr-3 text-black">
+                           <ShieldAlert size={20} />
+                        </div>
+                     </div>
+                  </CyberButton>
+               </div>
+            )}
          </div>
 
          {/* 5. LIVE OPS (SIRENA) */}

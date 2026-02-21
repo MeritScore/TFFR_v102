@@ -19,6 +19,7 @@ import { AgentDashboard } from './components/screens/dashboards/AgentDashboard';
 import { RoleManagementDashboard } from './components/screens/dashboards/RoleManagementDashboard';
 
 import { AdminTeamChat } from './components/screens/AdminTeamChat';
+import { TeamCredentialsScreen } from './components/screens/TeamCredentialsScreen';
 import { SectionHeader, CyberCard } from './components/ui/CyberComponents';
 import { UserRole, Screen } from './types';
 import { Bell, CheckCircle2, AlertTriangle } from 'lucide-react';
@@ -195,6 +196,8 @@ const App = () => {
         return <WalletScreen />;
       case Screen.ADMIN_TEAM_CHAT:
         return <AdminTeamChat />;
+      case Screen.TEAM_CREDENTIALS:
+        return <TeamCredentialsScreen onBack={() => setCurrentScreen(Screen.DASH_GOD_MODE)} />;
 
       // ADMIN ROLE DASHBOARDS
       case Screen.ADMIN_DASH:
@@ -248,7 +251,7 @@ const App = () => {
   const isFullScreen = [
     Screen.LOGIN, Screen.ONBOARDING, Screen.LOGIN_FLOW,
     Screen.ADMIN_GATEWAY, Screen.ADMIN_PERSONNEL_SELECT, Screen.ADMIN_LOGIN,
-    Screen.RECOVER_PASSWORD, Screen.SELECT_SPECIALTY
+    Screen.RECOVER_PASSWORD, Screen.SELECT_SPECIALTY, Screen.TEAM_CREDENTIALS
   ].includes(currentScreen);
 
   // Determine if we need a custom role label for the header

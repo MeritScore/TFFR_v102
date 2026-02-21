@@ -70,7 +70,7 @@ export const AdminGatewayLogin: React.FC<Props> = ({ onBack, onLoginSuccess }) =
                             <h1 className="text-2xl font-orbitron font-black text-white uppercase tracking-widest drop-shadow-lg">
                                 SECURE GATEWAY
                             </h1>
-                            <p className="text-[10px] text-red-400 font-mono tracking-widest mt-2 uppercase">
+                            <p className="text-[10px] text-red-300 font-mono tracking-widest mt-2 uppercase">
                                 RESTRICTED PERSONNEL ONLY
                             </p>
                         </div>
@@ -89,14 +89,14 @@ export const AdminGatewayLogin: React.FC<Props> = ({ onBack, onLoginSuccess }) =
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value.toLowerCase())}
                                 placeholder="Secure Email ID"
-                                className="w-full bg-gray-900 border border-red-900/50 rounded-lg px-4 py-3 text-red-100 font-mono focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-red-900/50"
+                                className="w-full bg-gray-900 border border-red-900/50 rounded-lg px-4 py-3 text-white font-mono focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-gray-400"
                             />
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Passphrase"
-                                className="w-full bg-gray-900 border border-red-900/50 rounded-lg px-4 py-3 text-red-100 font-mono focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-red-900/50"
+                                className="w-full bg-gray-900 border border-red-900/50 rounded-lg px-4 py-3 text-white font-mono focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-gray-400"
                             />
                         </div>
 
@@ -104,11 +104,11 @@ export const AdminGatewayLogin: React.FC<Props> = ({ onBack, onLoginSuccess }) =
                             fullWidth
                             onClick={handleAdminLogin}
                             disabled={!email || !password || isLoading}
-                            className={`!rounded-xl !bg-red-600 hover:!bg-red-500 shadow-[0_0_20px_rgba(220,38,38,0.4)] ${(!email || !password || isLoading) ? 'opacity-50' : ''}`}
+                            className={`!rounded-xl !bg-red-600 hover:!bg-red-500 !text-white shadow-[0_0_20px_rgba(220,38,38,0.4)] ${(!email || !password || isLoading) ? 'opacity-50' : ''}`}
                         >
-                            <div className="flex items-center justify-center gap-2">
+                            <div className="flex items-center justify-center gap-2 text-white">
                                 <Lock size={16} className={isLoading ? "animate-pulse" : ""} />
-                                <span className="font-orbitron tracking-widest font-bold">
+                                <span className="font-orbitron tracking-widest font-bold text-white">
                                     {isLoading ? 'VERIFYING...' : 'INITIATE HANDSHAKE'}
                                 </span>
                             </div>
@@ -117,7 +117,7 @@ export const AdminGatewayLogin: React.FC<Props> = ({ onBack, onLoginSuccess }) =
                 </CyberCard>
 
                 <div className="text-center mt-6">
-                    <p className="text-[9px] text-red-500/50 font-mono uppercase tracking-widest">
+                    <p className="text-[9px] text-gray-400 font-mono uppercase tracking-widest">
                         UNAUTHORIZED ACCESS WILL BE LOGGED
                     </p>
                 </div>

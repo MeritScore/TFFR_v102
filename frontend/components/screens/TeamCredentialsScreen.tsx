@@ -17,14 +17,14 @@ export const TeamCredentialsScreen: React.FC<Props> = ({ onBack }) => {
         }));
     };
 
-    // The literal credentials list to be stored securely for the Founder
+    // The credentials list pulling from secure environment strings
     const credentials = [
         {
             id: 'GOD_MODE',
             name: 'Marilyn (Founder)',
             role: 'ROOT / GOD MODE',
-            email: 'godj@thefunfanreporter.com',
-            pin: '2026',
+            email: import.meta.env.VITE_GOD_MODE_EMAIL || 'HIDDEN',
+            pin: import.meta.env.VITE_GOD_MODE_PIN || '••••',
             icon: ShieldAlert,
             color: '#ef4444' // Red
         },
@@ -32,8 +32,8 @@ export const TeamCredentialsScreen: React.FC<Props> = ({ onBack }) => {
             id: 'ARCHY',
             name: 'CTO ARCHY',
             role: 'HEAD OF AI',
-            email: 'archy@thefunfanreporter.com',
-            pin: '1001',
+            email: import.meta.env.VITE_ARCHY_EMAIL || 'HIDDEN',
+            pin: import.meta.env.VITE_ARCHY_PIN || '••••',
             icon: Cpu,
             color: '#39ff14' // Green
         },
@@ -41,8 +41,8 @@ export const TeamCredentialsScreen: React.FC<Props> = ({ onBack }) => {
             id: 'FLOR',
             name: 'FLOR',
             role: 'COO & LEGAL',
-            email: 'flor@thefunfanreporter.com',
-            pin: '1002',
+            email: import.meta.env.VITE_FLOR_EMAIL || 'HIDDEN',
+            pin: import.meta.env.VITE_FLOR_PIN || '••••',
             icon: Scale,
             color: '#eab308' // Yellow
         },
@@ -50,8 +50,8 @@ export const TeamCredentialsScreen: React.FC<Props> = ({ onBack }) => {
             id: 'SIRENA',
             name: 'SIRENA',
             role: 'LIVE OPS',
-            email: 'sirena@thefunfanreporter.com',
-            pin: '1003',
+            email: import.meta.env.VITE_SIRENA_EMAIL || 'HIDDEN',
+            pin: import.meta.env.VITE_SIRENA_PIN || '••••',
             icon: Headset,
             color: '#00ffff' // Cyan
         },
@@ -59,8 +59,8 @@ export const TeamCredentialsScreen: React.FC<Props> = ({ onBack }) => {
             id: 'HACKY',
             name: 'HACKY',
             role: 'CISO / SECURITY',
-            email: 'hacky@thefunfanreporter.com',
-            pin: '1004',
+            email: import.meta.env.VITE_HACKY_EMAIL || 'HIDDEN',
+            pin: import.meta.env.VITE_HACKY_PIN || '••••',
             icon: ShieldCheck,
             color: '#ef4444' // Red
         },
@@ -68,8 +68,8 @@ export const TeamCredentialsScreen: React.FC<Props> = ({ onBack }) => {
             id: 'DATIN',
             name: 'DATIN',
             role: 'DATA & ADS',
-            email: 'datin@thefunfanreporter.com',
-            pin: '1005',
+            email: import.meta.env.VITE_DATIN_EMAIL || 'HIDDEN',
+            pin: import.meta.env.VITE_DATIN_PIN || '••••',
             icon: BarChart2,
             color: '#10b981' // Emerald
         },
@@ -77,8 +77,8 @@ export const TeamCredentialsScreen: React.FC<Props> = ({ onBack }) => {
             id: 'VIPPY',
             name: 'VIPPY',
             role: 'B2B & VIP',
-            email: 'vippy@thefunfanreporter.com',
-            pin: '1006',
+            email: import.meta.env.VITE_VIPPY_EMAIL || 'HIDDEN',
+            pin: import.meta.env.VITE_VIPPY_PIN || '••••',
             icon: Briefcase,
             color: '#f97316' // Orange
         },
@@ -86,8 +86,8 @@ export const TeamCredentialsScreen: React.FC<Props> = ({ onBack }) => {
             id: 'ASSI',
             name: 'ASSI',
             role: 'ASSISTANT',
-            email: 'assi@thefunfanreporter.com',
-            pin: '2024',
+            email: import.meta.env.VITE_ASSI_EMAIL || 'HIDDEN',
+            pin: import.meta.env.VITE_ASSI_PIN || '••••',
             icon: Key,
             color: '#a855f7' // Purple
         },
@@ -95,8 +95,8 @@ export const TeamCredentialsScreen: React.FC<Props> = ({ onBack }) => {
             id: 'DESY',
             name: 'DESY',
             role: 'DESIGN',
-            email: 'desy@thefunfanreporter.com',
-            pin: '2025',
+            email: import.meta.env.VITE_DESY_EMAIL || 'HIDDEN',
+            pin: import.meta.env.VITE_DESY_PIN || '••••',
             icon: Key,
             color: '#ec4899' // Pink
         }

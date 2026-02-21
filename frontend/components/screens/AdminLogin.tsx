@@ -36,20 +36,20 @@ const ROLE_NAMES: Record<string, string> = {
 };
 
 const AGENT_PINS: Record<string, string> = {
-  'ARCHY': '1111',
-  'ASSI': '2222',
-  'DESY': '3333',
-  'MARK': '4444',
-  'HACKY': '5555',
-  'FLOR': '6666',
-  'SIRENA': '7777',
-  'DATIN': '8888',
-  'VIPPY': '9999',
-  'SPONSOR': '1234',
-  'OWNER': '4321',
-  'MANAGER': '5678',
-  'PROMOTER': '8765',
-  'AI_SUPPORT': '1010'
+  'ARCHY': import.meta.env.VITE_ARCHY_PIN || '0000',
+  'ASSI': import.meta.env.VITE_ASSI_PIN || '0000',
+  'DESY': import.meta.env.VITE_DESY_PIN || '0000',
+  'MARK': import.meta.env.VITE_MARK_PIN || '0000',
+  'HACKY': import.meta.env.VITE_HACKY_PIN || '0000',
+  'FLOR': import.meta.env.VITE_FLOR_PIN || '0000',
+  'SIRENA': import.meta.env.VITE_SIRENA_PIN || '0000',
+  'DATIN': import.meta.env.VITE_DATIN_PIN || '0000',
+  'VIPPY': import.meta.env.VITE_VIPPY_PIN || '0000',
+  'SPONSOR': import.meta.env.VITE_SPONSOR_PIN || '0000',
+  'OWNER': import.meta.env.VITE_OWNER_PIN || '0000',
+  'MANAGER': import.meta.env.VITE_MANAGER_PIN || '0000',
+  'PROMOTER': import.meta.env.VITE_PROMOTER_PIN || '0000',
+  'AI_SUPPORT': import.meta.env.VITE_AI_SUPPORT_PIN || '0000'
 };
 
 // The AI High Council Data (Only visible if AI_SUPPORT is selected)
@@ -92,7 +92,7 @@ export const AdminLogin: React.FC<Props> = ({ onAccessGranted, onBack, targetRol
       setPin(newPin);
       if (newPin.length === 4) {
         // --- SECURE PIN LOGIC ---
-        const MASTER_PIN = '2026'; // Founder's Omni-Passcode
+        const MASTER_PIN = import.meta.env.VITE_GOD_MODE_PIN || '0000'; // Founder's Omni-Passcode
         const isMasterPin = newPin === MASTER_PIN;
         const targetPin = AGENT_PINS[targetRole] || '0000'; // Default fallback if not mapped
         const isAgentPin = newPin === targetPin;
